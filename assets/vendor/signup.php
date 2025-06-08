@@ -11,9 +11,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Получение данных из формы
-    $username = $_POST['username'];
+    $username = trim($_POST['username']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
+
+    // Проверка, что имя содержит только латиницу и цифры
+    if (!preg_match('/^[A-Za-z0-9]+$/', $username)) {
+        $_SESSION['error_message'] = "Логин может содержать только латинские буквы и цифры.";
+        header("Location: ../../register.php");
+        exit();
+    }
 
     // Проверка, чтобы пароли совпадали
     if ($password !== $confirm_password) {

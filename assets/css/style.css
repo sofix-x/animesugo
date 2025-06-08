@@ -232,7 +232,9 @@ h2 {
 /* =========  Cart Icon  ======== */
 .cart-icon {
   width: 28px;
-  height: 28px;
+  max-height: 28px;
+  height: auto;
+  display: inline-block;
   cursor: pointer;
   position: relative;
 }

@@ -1,0 +1,36 @@
+<?php
+// Shared header component.
+// Ensure session is active so auth-specific menu items work.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Helper: current cart count (for initial render; JS will update dynamically)
+$cartCount = isset($_SESSION['cart_count']) ? (int)$_SESSION['cart_count'] : 0;
+?>
+<header>
+  <nav class="container">
+    <ul>
+      <li><a href="index.php">Главная</a></li>
+      <li><a href="tovars.php">Товары</a></li>
+      <li><a href="abous_us.php">О нас</a></li>
+
+      <!-- Корзина прижата вправо -->
+      <li class="cart-item">
+        <a href="#" onclick="toggleCart()">
+          <span class="cart-icon">Корзина&nbsp;(<?= $cartCount ?>)</span>
+        </a>
+      </li>
+
+      <?php if (isset($_SESSION['username'])): ?>
+          <?php if (!empty($_SESSION['is_admin'])): ?>
+              <li><a href="admin.php">Админ панель</a></li>
+          <?php endif; ?>
+          <li><a href="assets/vendor/logout.php">Выход</a></li>
+      <?php else: ?>
+          <li><a href="register.php">Зарегистрироваться</a></li>
+          <li><a href="login.php">Войти</a></li>
+      <?php endif; ?>
+    </ul>
+  </nav>
+</header>

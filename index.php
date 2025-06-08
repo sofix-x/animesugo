@@ -20,28 +20,7 @@ $result = $mysqli->query($sql);
 </head>
 <body>
 
-<header>
-    <nav class="container">
-        <ul>
-            <li><a href="index.php">Главная</a></li>
-            <li><a href="tovars.php">Товары</a></li>
-            <li><a href="abous_us.php">О нас</a></li>
-            <li class="cart-item">
-                <a href="#" onclick="toggleCart()"><span class="cart-icon">Корзина&nbsp;(0)</span></a>
-            </li>
-            <?php if (isset($_SESSION['username'])): ?>
-                <?php if ($_SESSION['is_admin']): ?>
-                    <li><a href="admin.php">Админ панель</a></li>
-                
-                <?php endif; ?>
-                <li><a href="assets/vendor/logout.php">Выход</a></li>
-            <?php else: ?>
-                <li><a href="register.php">Зарегистрироваться</a></li>
-                <li><a href="login.php">Войти</a></li>
-            <?php endif; ?>
-        </ul>
-    </nav>
-</header>
+<?php include 'header.php'; ?>
 
 <!-- Всплывающее окно корзины -->
 <div class="cart-popup" id="cartPopup" style="display: none;">
@@ -102,45 +81,8 @@ $result = $mysqli->query($sql);
     <p>&copy; 2024 Интернет-каталог товаров</p>
 </footer>
 
+<script src="assets/js/cart.js"></script>
 <script>
-    // Глобальная переменная для отслеживания количества товаров в корзине
-    let cartCount = 0;
-
-    function addToCart(button) {
-        button.style.display = 'none'; // Скрыть кнопку "Добавить в корзину"
-        const quantityControl = button.nextElementSibling;
-        quantityControl.style.display = 'block'; // Показать управление количеством
-        updateCart(1); // Увеличить количество в корзине
-    }
-
-    function increaseQuantity(button) {
-        const quantityElement = button.previousElementSibling;
-        let quantity = parseInt(quantityElement.textContent);
-        quantity++;
-        quantityElement.textContent = quantity;
-        updateCart(1); // Увеличить количество в корзине
-    }
-
-    function decreaseQuantity(button) {
-        const quantityElement = button.nextElementSibling;
-        let quantity = parseInt(quantityElement.textContent);
-        if (quantity > 1) {
-            quantity--;
-            quantityElement.textContent = quantity;
-            updateCart(-1); // Уменьшить количество в корзине
-        } else {
-            button.parentElement.style.display = 'none'; // Скрыть управление количеством
-            button.parentElement.previousElementSibling.style.display = 'block'; // Показать кнопку "Добавить в корзину"
-            updateCart(-1); // Уменьшить количество в корзине
-        }
-    }
-
-    function updateCart(change) {
-        cartCount += change; // Обновить общее количество товаров в корзине
-        const cartLink = document.querySelector('.cart-icon');
-        cartLink.textContent = `Корзина (${cartCount})`;
-    }
-
     let currentSlide = 0;
 
     function showSlide(index) {
@@ -168,22 +110,6 @@ $result = $mysqli->query($sql);
 
     // Автоматическая смена слайдов каждые 5 секунд
     setInterval(nextSlide, 5000);
-
-    // Открытие и закрытие окна корзины
-    function toggleCart() {
-        const cartPopup = document.getElementById('cartPopup');
-        const isVisible = cartPopup.style.display === 'block';
-
-        if (isVisible) {
-            cartPopup.style.display = 'none';
-        } else {
-            cartPopup.style.display = 'block';
-        }
-    }
-
-    function closeCart() {
-        document.getElementById('cartPopup').style.display = 'none';
-    }
 </script>
 </body>
 </html>

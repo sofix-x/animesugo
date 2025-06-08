@@ -33,29 +33,7 @@
 }
 
     </style>
-<header>
-    <nav class="container">
-        <ul>
-            <li><a href="index.php">Главная</a></li>
-            <li><a href="tovars.php">Товары</a></li>
-            <li><a href="abous_us.php">О нас</a></li>
-            <li>
-                <a href="#" onclick="toggleCart()">
-                    <span class="cart-icon">Корзина&nbsp;(0)</span>
-                </a>
-            </li>
-            <?php if (isset($_SESSION['username'])): ?>
-                <?php if ($_SESSION['is_admin']): ?>
-                    <li><a href="admin.php">Админ панель</a></li>
-                <?php endif; ?>
-                <li><a href="assets/vendor/logout.php">Выход</a></li>
-            <?php else: ?>
-                <li><a href="register.php">Зарегистрироваться</a></li>
-                <li><a href="login.php">Войти</a></li>
-            <?php endif; ?>
-        </ul>
-    </nav>
-</header>
+<?php include 'header.php'; ?>
 
 
 
@@ -86,6 +64,7 @@
     <p>&copy; 2024 Интернет-каталог товаров</p>
 </footer>
 
+<script src="assets/js/cart.js"></script>
 <script>
     function group_vk() {
     // Открытие страницы оформления заказа в новой вкладке

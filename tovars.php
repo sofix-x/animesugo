@@ -54,29 +54,7 @@ if (isset($_GET['category_id']) || isset($_GET['max_price']) || isset($_GET['sea
 </head>
 <body>
 
-<header>
-    <nav class="container">
-        <ul>
-            <li><a href="index.php">Главная</a></li>
-            <li><a href="tovars.php">Товары</a></li>
-            <li><a href="abous_us.php">О нас</a></li>
-            <li>
-                <a href="#" onclick="toggleCart()">
-                    <span class="cart-icon">Корзина&nbsp;(0)</span>
-                </a>
-            </li>
-            <?php if (isset($_SESSION['username'])): ?>
-                <?php if ($_SESSION['is_admin']): ?>
-                    <li><a href="admin.php">Админ панель</a></li>
-                <?php endif; ?>
-                <li><a href="assets/vendor/logout.php">Выход</a></li>
-            <?php else: ?>
-                <li><a href="register.php">Зарегистрироваться</a></li>
-                <li><a href="login.php">Войти</a></li>
-            <?php endif; ?>
-        </ul>
-    </nav>
-</header>
+<?php include 'header.php'; ?>
 
 <!-- Всплывающее окно корзины -->
 <div class="cart-popup" id="cartPopup" style="display: none; color:black;">
@@ -137,138 +115,30 @@ if (isset($_GET['category_id']) || isset($_GET['max_price']) || isset($_GET['sea
     <p>&copy; 2024 Интернет-каталог товаров</p>
 </footer>
 
+<script src="assets/js/cart.js"></script>
 <script>
-    // Глобальная переменная для отслеживания товаров в корзине
-    let cartItems = {};
-
     function filterProducts() {
-    const categoryId = $('#category').val();
-    const maxPrice = $('#price').val();
-    const searchTerm = $('#search').val();
+        const categoryId = $('#category').val();
+        const maxPrice = $('#price').val();
+        const searchTerm = $('#search').val();
 
-    $.ajax({
-        url: 'filter_products.php', // файл, который будет обрабатывать запрос
-        method: 'GET',
-        data: {
-            category_id: categoryId,
-            max_price: maxPrice,
-            search: searchTerm
-        },
-        success: function(data) {
-            $('#productList').html(data); // Обновление списка товаров
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error("Ошибка AJAX: ", textStatus, errorThrown);
-        }
-    });
-}
-
-
-    function addToCart(button) {
-        const productElement = button.closest('.product');
-        const productId = productElement.getAttribute('data-id');
-        const productName = productElement.querySelector('h3').textContent;
-        const productPrice = productElement.getAttribute('data-price');
-        const quantityControl = button.nextElementSibling;
-
-        button.style.display = 'none'; // Скрыть кнопку "Добавить в корзину"
-        quantityControl.style.display = 'block'; // Показать управление количеством
-
-        // Проверка наличия товара в корзине
-        if (!cartItems[productId]) {
-            cartItems[productId] = {
-                name: productName,
-                price: productPrice,
-                quantity: 1
-            };
-        } else {
-            cartItems[productId].quantity++;
-        }
-
-        console.log("Добавлен товар в корзину: ", cartItems[productId]); // Отладочная информация
-        updateCart();
-    }
-
-    function increaseQuantity(button) {
-        const quantityElement = button.previousElementSibling;
-        let quantity = parseInt(quantityElement.textContent);
-        quantity++;
-        quantityElement.textContent = quantity;
-
-        const productElement = button.closest('.product');
-        const productId = productElement.getAttribute('data-id');
-        cartItems[productId].quantity++;
-
-        console.log("Увеличено количество товара в корзине: ", cartItems[productId]); // Отладочная информация
-        updateCart();
-    }
-
-    function decreaseQuantity(button) {
-        const quantityElement = button.nextElementSibling;
-        let quantity = parseInt(quantityElement.textContent);
-        const productElement = button.closest('.product');
-        const productId = productElement.getAttribute('data-id');
-
-        if (quantity > 1) {
-            quantity--;
-            quantityElement.textContent = quantity;
-            cartItems[productId].quantity--;
-
-            console.log("Уменьшено количество товара в корзине: ", cartItems[productId]); // Отладочная информация
-            updateCart();
-        } else {
-            button.parentElement.style.display = 'none'; // Скрыть управление количеством
-            button.parentElement.previousElementSibling.style.display = 'block'; // Показать кнопку "Добавить в корзину"
-            delete cartItems[productId]; // Удалить товар из корзины
-            console.log("Товар удален из корзины: ", productId); // Отладочная информация
-            updateCart();
-        }
-    }
-
-    function updateCart() {
-        const cartItemsContainer = document.getElementById('cartItems');
-        cartItemsContainer.innerHTML = ''; // Очистить текущее содержимое корзины
-
-        let totalItems = 0;
-
-        // Проверяем, есть ли товары в корзине
-        if (Object.keys(cartItems).length === 0) {
-            cartItemsContainer.innerHTML = '<p>Корзина пуста</p>'; // Сообщение о пустой корзине
-        } else {
-            for (const itemId in cartItems) {
-                const item = cartItems[itemId];
-                totalItems += item.quantity;
-                cartItemsContainer.innerHTML += `
-                    <div class="cart-item">
-                        <p>${item.name} - ${item.quantity} шт. по ${item.price} руб.</p>
-                    </div>
-                `;
+        $.ajax({
+            url: 'filter_products.php', // файл, который будет обрабатывать запрос
+            method: 'GET',
+            data: {
+                category_id: categoryId,
+                max_price: maxPrice,
+                search: searchTerm
+            },
+            success: function(data) {
+                $('#productList').html(data); // Обновление списка товаров
+                // После обновления списка товаров, нужно заново инициализировать кнопки
+                initializeProductButtons();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Ошибка AJAX: ", textStatus, errorThrown);
             }
-        }
-
-        const cartLink = document.querySelector('.cart-icon');
-        cartLink.textContent = `Корзина (${totalItems})`; // Обновление текста корзины
-    }
-
-    // Открытие и закрытие окна корзины
-    function toggleCart() {
-        const cartPopup = document.getElementById('cartPopup');
-        const isVisible = cartPopup.style.display === 'block';
-
-        if (isVisible) {
-            cartPopup.style.display = 'none';
-        } else {
-            cartPopup.style.display = 'block';
-            updateCart(); // Обновление содержимого корзины при открытии
-        }
-    }
-
-    function closeCart() {
-        document.getElementById('cartPopup').style.display = 'none';
-    }
-
-    function purchase() {
-        window.open('https://vk.com/im?media=&sel=-213494634', '_blank'); 
+        });
     }
 </script>
 

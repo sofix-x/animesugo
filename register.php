@@ -9,17 +9,7 @@
 </head>
 <body>
 
-<header>
-    <nav>
-        <ul>
-            <li><a href="index.php">Главная</a></li>
-            <li><a href="login.php">Войти</a></li>
-            <li class="cart-item">
-                <a href="#" onclick="toggleCart()"><span class="cart-icon">Корзина&nbsp;(0)</span></a>
-            </li>
-        </ul>
-    </nav>
-</header>
+<?php include 'header.php'; ?>
 
 <main>
     <section class="auth-card">
@@ -58,5 +48,6 @@
     <p>&copy; 2024 Интернет-каталог товаров</p>
 </footer>
 
+<script src="assets/js/cart.js"></script>
 </body>
 </html>

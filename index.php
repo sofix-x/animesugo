@@ -22,14 +22,6 @@ $result = $mysqli->query($sql);
 
 <?php include 'header.php'; ?>
 
-<!-- Всплывающее окно корзины -->
-<div class="cart-popup" id="cartPopup" style="display: none;">
-    <h2>Корзина</h2>
-    <div class="cart-items" id="cartItems">
-        <!-- Список товаров в корзине будет здесь -->
-    </div>
-    <button onclick="closeCart()">Закрыть</button>
-</div>
 <div class="main_name_center">
 <h1>SUGOi TOYS | Магазин оригинальных аниме фигурок</h1>
 </div>

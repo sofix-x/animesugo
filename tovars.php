@@ -56,15 +56,6 @@ if (isset($_GET['category_id']) || isset($_GET['max_price']) || isset($_GET['sea
 
 <?php include 'header.php'; ?>
 
-<!-- Всплывающее окно корзины -->
-<div class="cart-popup" id="cartPopup" style="display: none; color:black;">
-    <h2>Корзина</h2>
-    <div class="cart-items" id="cartItems">
-        <!-- Список товаров в корзине будет здесь -->
-    </div>
-    <button onclick="purchase()">Купить</button> <!-- Кнопка "Купить" -->
-    <button onclick="closeCart()">Закрыть</button>
-</div>
 
 <main>
     <h1 style="text-align: center;">Наши товары</h1>

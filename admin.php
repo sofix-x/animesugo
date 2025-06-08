@@ -189,15 +189,7 @@ $mysqli->close(); // Ensure the connection is closed here
 </head>
 <body>
 
-<header>
-    <nav>
-        <ul>
-            <li><a href="index.php">Главная</a></li>
-            <li><a href="tovars.php">Наши товары</a></li>
-            <li><a href="assets/vendor/logout.php">Выход</a></li>
-        </ul>
-    </nav>
-</header>
+<?php include 'header.php'; ?>
 
 <main>
     <h1 style="text-align: center;">Админ Панель</h1>
@@ -407,6 +399,7 @@ $mysqli->close(); // Ensure the connection is closed here
     <p>&copy; 2024 Интернет-каталог товаров</p>
 </footer>
 
+<script src="assets/js/cart.js"></script>
 <script>
     // Открыть модальное окно для добавления товара
     document.getElementById("addProductBtn").onclick = function() {

@@ -34,3 +34,13 @@ $cartCount = isset($_SESSION['cart_count']) ? (int)$_SESSION['cart_count'] : 0;
     </ul>
   </nav>
 </header>
+
+<!-- Всплывающее окно корзины -->
+<div class="cart-popup" id="cartPopup" style="display: none; color:black;">
+    <h2>Корзина</h2>
+    <div class="cart-items" id="cartItems">
+        <!-- Список товаров в корзине будет здесь -->
+    </div>
+    <button onclick="purchase()">Купить</button>
+    <button onclick="closeCart()">Закрыть</button>
+</div>

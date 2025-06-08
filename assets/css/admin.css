@@ -42,7 +42,7 @@ section {
 }
 
 section:hover {
-    box-shadow: 0 6px_12px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
 }
 
 /* Action button groups */
@@ -229,4 +229,57 @@ table img {
     width: 100%;
     padding: 12px;
     font-size: 1.1em;
+}
+
+/* ======== Enhanced Admin Panel Look & Feel ======== */
+body {
+    background: linear-gradient(135deg, #f7f9fc 0%, #e9ecf3 100%);
+}
+
+/* Card edge + soft border */
+section {
+    border: 1px solid #e1e5ec;
+}
+
+/* Zebra-striping rows for better readability */
+tbody tr:nth-child(even) {
+    background-color: #fafbfd;
+}
+
+/* Subtle hover highlight */
+tbody tr:hover {
+    background-color: #f1f3f7;
+}
+
+/* Rounded pill buttons with active depression */
+button, .button {
+    border-radius: 40px;
+}
+
+button:active, .button:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 3px 5px rgba(0,0,0,0.12);
+}
+
+/* Larger, clearer checkboxes */
+input[type="checkbox"] {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* Responsive table on small screens */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr { display: block; }
+    thead tr { position: absolute; top: -9999px; left: -9999px; }
+    tr { margin: 0 0 1rem 0; border: 1px solid #dee2e6; padding: 10px; border-radius: 8px; }
+    td { border: none; position: relative; padding-left: 50%; }
+    td::before {
+        position: absolute;
+        top: 50%; left: 15px;
+        transform: translateY(-50%);
+        white-space: nowrap;
+        font-weight: 600;
+        color: #6c757d;
+        content: attr(data-label);
+    }
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход</title>
     <link rel="stylesheet" href="assets/css/log-reg.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
@@ -13,6 +14,9 @@
         <ul>
             <li><a href="index.php">Главная</a></li>
             <li><a href="register.php">Зарегистрироваться</a></li>
+            <li class="cart-item">
+                <a href="#" onclick="toggleCart()"><span class="cart-icon">🛒</span></a>
+            </li>
         </ul>
     </nav>
 </header>

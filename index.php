@@ -26,6 +26,9 @@ $result = $mysqli->query($sql);
             <li><a href="index.php">Главная</a></li>
             <li><a href="tovars.php">Товары</a></li>
             <li><a href="abous_us.php">О нас</a></li>
+            <li class="cart-item">
+                <a href="#" onclick="toggleCart()"><span class="cart-icon">🛒</span></a>
+            </li>
             <?php if (isset($_SESSION['username'])): ?>
                 <?php if ($_SESSION['is_admin']): ?>
                     <li><a href="admin.php">Админ панель</a></li>

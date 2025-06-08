@@ -44,9 +44,13 @@ nav {
 nav ul {
   list-style: none;
   display: flex;
-  justify-content: center;
   gap: 2rem;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+nav ul li.cart-item {
+  margin-left: auto;          /* прижимает корзину вправо */
 }
 
 nav ul li a {

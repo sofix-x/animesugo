@@ -117,7 +117,7 @@ if (isset($_POST['edit_product'])) {
 }
 
 // Получение всех пользователей для отображения в таблице
-$usersQuery = "SELECT id, username, is_admin FROM users";
+$usersQuery = "SELECT id, username FROM users"; // Убираем is_admin из запроса, т.к. signin.php не использует его
 $usersResult = $mysqli->query($usersQuery);
 $users = [];
 if ($usersResult && $usersResult->num_rows > 0) {
@@ -145,7 +145,7 @@ $mysqli->close(); // Ensure the connection is closed here
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админ Панель</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/admin.css?v=1.2">
+    <link rel="stylesheet" href="assets/css/admin.css">
     <style>
         /* Стили для модального окна */
         .modal {
@@ -271,15 +271,13 @@ $mysqli->close(); // Ensure the connection is closed here
                     <tr>
                         <td><?= htmlspecialchars($user['id']) ?></td>
                         <td><?= htmlspecialchars($user['username']) ?></td>
-                        <td><?= !empty($user['is_admin']) ? 'Да' : 'Нет' ?></td>
+                        <td><?= ($user['username'] === 'admin') ? 'Да' : 'Нет' ?></td>
                         <td>
-                            <button class="button-edit" onclick="openEditUserModal(<?= $user['id'] ?>, '<?= htmlspecialchars($user['username'], ENT_QUOTES) ?>')">Редактировать</button>
-                            
-                            <?php if ($user['username'] !== 'admin' && $_SESSION['user_id'] != $user['id']): ?>
-                                <button onclick="toggleAdminStatus(<?= $user['id'] ?>, <?= !empty($user['is_admin']) ? 1 : 0 ?>)">
-                                    <?= !empty($user['is_admin']) ? 'Убрать админа' : 'Сделать админом' ?>
-                                </button>
-                                <button class="button-delete" onclick="deleteUser(<?= $user['id'] ?>)">Удалить</button>
+                            <?php if ($user['username'] !== 'admin'): // Нельзя редактировать или удалять основного админа 'admin' ?>
+                                <button class="button-edit" onclick="openEditUserModal(<?= $user['id'] ?>, '<?= htmlspecialchars($user['username'], ENT_QUOTES) ?>')">Редактировать</button>
+                                <?php if ($_SESSION['user_id'] != $user['id']): // Нельзя удалить себя ?>
+                                    <button class="button-delete" onclick="deleteUser(<?= $user['id'] ?>)">Удалить</button>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -522,31 +520,8 @@ document.getElementById("editUserForm")?.addEventListener("submit", function(eve
     });
 });
 
-function toggleAdminStatus(userId, isAdmin) {
-    const newStatus = isAdmin ? 0 : 1;
-    const actionText = newStatus ? 'сделать этого пользователя админом' : 'убрать права администратора у этого пользователя';
-
-    if (confirm(`Вы уверены, что хотите ${actionText}?`)) {
-        fetch('assets/vendor/toggle_admin.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: userId, is_admin: newStatus })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Статус пользователя обновлен.');
-                window.location.reload();
-            } else {
-                alert('Ошибка при обновлении статуса: ' + (data.error || 'Неизвестная ошибка'));
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
-            alert('Произошла ошибка сети.');
-        });
-    }
-}
+// Функция toggleAdmin удаляется, так как админ статус определяется по username === 'admin'
+// function toggleAdmin(userId, isAdmin) { ... }
 
 function deleteUser(userId) {
     if (confirm('Вы уверены, что хотите удалить этого пользователя? Это действие необратимо.')) {

@@ -199,7 +199,7 @@ $mysqli->close(); // Ensure the connection is closed here
         <div class="section-actions">
             <button id="addProductBtn">Добавить товар</button>
             <button class="button-edit" onclick="editSelected()">Редактировать товар</button>
-            <button class="button-delete" onclick="deleteSelected()">Удалить товар</button>
+            <button type="button" class="button-delete" onclick="deleteSelected()">Удалить товар</button>
         </div>
 
         <table>
@@ -240,7 +240,7 @@ $mysqli->close(); // Ensure the connection is closed here
         <div class="section-actions">
             <button id="addCategoryBtn">Добавить категорию</button>
             <button class="button-edit" onclick="editCategory()">Редактировать категорию</button>
-            <button class="button-delete" onclick="deleteCategory()">Удалить категорию</button>
+            <button type="button" class="button-delete" onclick="deleteCategory()">Удалить категорию</button>
         </div>
 
         <h3>Список категорий</h3>
@@ -277,7 +277,7 @@ $mysqli->close(); // Ensure the connection is closed here
                                 <button class="button-edit" onclick="openEditUserModal(<?= $user['id'] ?>, '<?= htmlspecialchars($user['username'], ENT_QUOTES) ?>')">Редактировать</button>
             <button class="button" onclick="toggleAdmin(<?= $user['id'] ?>, <?= $user['is_admin'] ? '0' : '1' ?>)"><?= $user['is_admin'] ? 'Снять права' : 'Сделать админом' ?></button>
                                 <?php if ($_SESSION['user_id'] != $user['id']): // Нельзя удалить себя ?>
-                                    <button class="button-delete" onclick="deleteUser(<?= $user['id'] ?>)">Удалить</button>
+                                    <button type="button" class="button-delete" onclick="deleteUser(<?= $user['id'] ?>)">Удалить</button>
                                 <?php endif; ?>
                             <?php endif; ?>
                         </td>

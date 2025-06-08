@@ -3,7 +3,7 @@
 $db_host = 'localhost';
 $db_name = 'second_site_db'; // Ваше имя БД
 $db_user = 'second_site_user'; // Ваш пользователь БД
-$db_pass = '1'; // Ваш пароль
+$db_pass = '2'; // Ваш пароль
 
 $mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
 

@@ -21,7 +21,7 @@ $result = $mysqli->query($sql);
 <body>
 
 <header>
-    <nav>
+    <nav class="container">
         <ul>
             <li><a href="index.php">Главная</a></li>
             <li><a href="tovars.php">Товары</a></li>
@@ -53,7 +53,7 @@ $result = $mysqli->query($sql);
 </div>
 <main>
     
-    <section class="slider">
+    <section class="slider container">
         <h2>Новинки</h2>
         <div class="slider">
             <div class="slides">
@@ -68,7 +68,7 @@ $result = $mysqli->query($sql);
         </div>
     </section>
 
-    <section class="products">
+    <section class="products container">
         <h2>Наши товары</h2>
         <div class="filter">
             <!-- Фильтр будет здесь -->

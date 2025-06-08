@@ -4,9 +4,6 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// Helper: current cart count (for initial render; JS will update dynamically)
-$cartCount = isset($_SESSION['cart_count']) ? (int)$_SESSION['cart_count'] : 0;
 ?>
 <header>
   <nav class="container">
@@ -18,7 +15,7 @@ $cartCount = isset($_SESSION['cart_count']) ? (int)$_SESSION['cart_count'] : 0;
       <!-- Корзина прижата вправо -->
       <li class="cart-item">
         <a href="#" onclick="toggleCart()">
-          <span class="cart-icon">Корзина&nbsp;(<?= $cartCount ?>)</span>
+          <span class="cart-icon">Корзина&nbsp;(0)</span>
         </a>
       </li>
 
@@ -34,6 +31,20 @@ $cartCount = isset($_SESSION['cart_count']) ? (int)$_SESSION['cart_count'] : 0;
     </ul>
   </nav>
 </header>
+<script>
+  // Inline script to prevent cart count flicker
+  (function() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || {};
+    let totalItems = 0;
+    for (const itemId in cart) {
+        totalItems += cart[itemId].quantity;
+    }
+    const cartIcon = document.querySelector('.cart-icon');
+    if (cartIcon) {
+        cartIcon.textContent = `Корзина (${totalItems})`;
+    }
+  })();
+</script>
 
 <!-- Всплывающее окно корзины -->
 <div class="cart-popup" id="cartPopup" style="display: none; color:black;">

@@ -196,9 +196,11 @@ $mysqli->close(); // Ensure the connection is closed here
 
     <section>
         <h2>Управление товарами</h2>
-        <button class="add-product" id="addProductBtn">Добавить товар</button>
-        <button class="delete-product" onclick="deleteSelected()">Удалить товар</button>
-        <button class="edit-product" onclick="editSelected()">Редактировать товар</button>
+        <div class="section-actions">
+            <button id="addProductBtn">Добавить товар</button>
+            <button class="button-edit" onclick="editSelected()">Редактировать товар</button>
+            <button class="button-delete" onclick="deleteSelected()">Удалить товар</button>
+        </div>
 
         <table>
             <thead>
@@ -235,9 +237,11 @@ $mysqli->close(); // Ensure the connection is closed here
 
     <section>
         <h2>Управление категориями</h2>
-        <button id="addCategoryBtn">Добавить категорию</button>
-        <button onclick="editCategory()">Редактировать категорию</button>
-        <button onclick="deleteCategory()">Удалить категорию</button>
+        <div class="section-actions">
+            <button id="addCategoryBtn">Добавить категорию</button>
+            <button class="button-edit" onclick="editCategory()">Редактировать категорию</button>
+            <button class="button-delete" onclick="deleteCategory()">Удалить категорию</button>
+        </div>
 
         <h3>Список категорий</h3>
         <ul id="categoryList">
@@ -270,9 +274,9 @@ $mysqli->close(); // Ensure the connection is closed here
                         <td><?= ($user['username'] === 'admin') ? 'Да' : 'Нет' ?></td>
                         <td>
                             <?php if ($user['username'] !== 'admin'): // Нельзя редактировать или удалять основного админа 'admin' ?>
-                                <button onclick="openEditUserModal(<?= $user['id'] ?>, '<?= htmlspecialchars($user['username'], ENT_QUOTES) ?>')">Редактировать</button>
+                                <button class="button-edit" onclick="openEditUserModal(<?= $user['id'] ?>, '<?= htmlspecialchars($user['username'], ENT_QUOTES) ?>')">Редактировать</button>
                                 <?php if ($_SESSION['user_id'] != $user['id']): // Нельзя удалить себя ?>
-                                    <button onclick="deleteUser(<?= $user['id'] ?>)">Удалить</button>
+                                    <button class="button-delete" onclick="deleteUser(<?= $user['id'] ?>)">Удалить</button>
                                 <?php endif; ?>
                             <?php endif; ?>
                         </td>

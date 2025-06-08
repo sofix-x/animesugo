@@ -229,6 +229,20 @@ h2 {
   display: block;
 }
 
+/* =========  Cart Icon  ======== */
+.cart-icon {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  position: relative;
+}
+
+.cart-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 /* Quantity control */
 .quantity-control {
   display: flex;

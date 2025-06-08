@@ -1,77 +1,66 @@
 <?php
 session_start();
-include '../../db_connection.php'; // Централизованное подключение
-
 header('Content-Type: application/json');
+include '../../db_connection.php';
 
-// Проверка, что пользователь является админом
-if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
-    echo json_encode(['success' => false, 'error' => 'Доступ запрещен.']);
+/*
+ *  Delete user endpoint
+ *  Accepts JSON: { "user_id": 5 }
+ *  Rules:
+ *   - Only admins can delete users.
+ *   - Cannot delete yourself.
+ *   - Cannot delete the main 'admin' account.
+ */
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'error' => 'Метод не поддерживается.']);
     exit;
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
-
-if (!isset($data['user_id'])) {
-    echo json_encode(['success' => false, 'error' => 'Недостаточно данных (ID пользователя).']);
+if (!$data || !isset($data['user_id'])) {
+    echo json_encode(['success' => false, 'error' => 'Неверные входные данные.']);
     exit;
 }
 
-$user_id = (int)$data['user_id'];
+$userIdToDelete = (int)$data['user_id'];
+$currentUserId  = $_SESSION['user_id'] ?? 0;
+$isAdmin        = !empty($_SESSION['is_admin']);
 
-if ($user_id === 0) {
-    echo json_encode(['success' => false, 'error' => 'Неверный ID пользователя.']);
+if (!$isAdmin) {
+    echo json_encode(['success' => false, 'error' => 'У вас нет прав для удаления пользователей.']);
+    exit;
+}
+if ($userIdToDelete === $currentUserId) {
+    echo json_encode(['success' => false, 'error' => 'Нельзя удалить самого себя.']);
     exit;
 }
 
-// Нельзя удалять основного админа (например, пользователя с именем 'admin')
-$checkAdminStmt = $mysqli->prepare("SELECT username FROM users WHERE id = ?");
-$checkAdminStmt->bind_param("i", $user_id);
-$checkAdminStmt->execute();
-$checkAdminResult = $checkAdminStmt->get_result();
-if ($checkAdminRow = $checkAdminResult->fetch_assoc()) {
-    if ($checkAdminRow['username'] === 'admin') {
-        echo json_encode(['success' => false, 'error' => 'Основной администратор не может быть удален.']);
-        $checkAdminStmt->close();
-        $mysqli->close();
-        exit;
-    }
+/* Проверяем, что не удаляем основного админа */
+$stmt = $mysqli->prepare("SELECT username FROM users WHERE id = ?");
+$stmt->bind_param('i', $userIdToDelete);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows === 0) {
+    echo json_encode(['success' => false, 'error' => 'Пользователь не найден.']);
+    exit;
 }
-$checkAdminStmt->close();
-
-// Также, нельзя удалять самого себя (текущего админа)
-if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $user_id) { // Предполагаем, что user_id админа хранится в сессии
-    // Если user_id не хранится, можно получить его по $_SESSION['username']
-    // $current_admin_username = $_SESSION['username'];
-    // $selfCheckStmt = $mysqli->prepare("SELECT id FROM users WHERE username = ?");
-    // $selfCheckStmt->bind_param("s", $current_admin_username);
-    // $selfCheckStmt->execute();
-    // $selfCheckResult = $selfCheckStmt->get_result();
-    // if($selfRow = $selfCheckResult->fetch_assoc()){
-    //     if($selfRow['id'] == $user_id){
-    //          echo json_encode(['success' => false, 'error' => 'Вы не можете удалить самого себя.']);
-    //          $mysqli->close();
-    //          exit;
-    //     }
-    // }
-    // $selfCheckStmt->close();
-    // Для простоты, если ID текущего админа не хранится в сессии, эту проверку можно опустить или реализовать по username
+$row = $result->fetch_assoc();
+if ($row['username'] === 'admin') {
+    echo json_encode(['success' => false, 'error' => 'Нельзя удалить основного администратора.']);
+    exit;
 }
+$stmt->close();
 
-
+/* Удаляем пользователя */
 $stmt = $mysqli->prepare("DELETE FROM users WHERE id = ?");
-$stmt->bind_param("i", $user_id);
+$stmt->bind_param('i', $userIdToDelete);
 
 if ($stmt->execute()) {
-    if ($stmt->affected_rows > 0) {
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Пользователь не найден или уже удален.']);
-    }
+    echo json_encode(['success' => true]);
 } else {
-    echo json_encode(['success' => false, 'error' => 'Ошибка удаления пользователя: ' . $stmt->error]);
+    echo json_encode(['success' => false, 'error' => 'Ошибка БД: ' . $stmt->error]);
 }
-
 $stmt->close();
 $mysqli->close();
 ?>

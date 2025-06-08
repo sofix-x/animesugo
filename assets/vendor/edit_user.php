@@ -1,129 +1,90 @@
 <?php
 session_start();
-include '../../db_connection.php'; // Централизованное подключение
-
 header('Content-Type: application/json');
+include '../../db_connection.php';
 
-// Проверка, что текущий пользователь является админом
-if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
-    echo json_encode(['success' => false, 'error' => 'Доступ запрещен.']);
+/*
+ *  Edit user endpoint
+ *  Accepts JSON: { "user_id": 3, "username": "newName", "password": "newPass" }
+ *  Rules:
+ *   - Only admins can edit any user.
+ *   - A non-admin can only edit their own account.
+ *   - Username must be unique.
+ */
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'error' => 'Метод не поддерживается.']);
     exit;
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
-
-if (!isset($data['user_id']) || !isset($data['username'])) {
-    echo json_encode(['success' => false, 'error' => 'Недостаточно данных (ID пользователя и имя пользователя обязательны).']);
+if (!$data || !isset($data['user_id']) || !isset($data['username'])) {
+    echo json_encode(['success' => false, 'error' => 'Неверные входные данные.']);
     exit;
 }
 
-$user_id_to_edit = (int)$data['user_id'];
-$new_username = trim($data['username']);
-$new_password = isset($data['password']) ? trim($data['password']) : null;
+$userId   = (int)$data['user_id'];
+$username = trim($data['username']);
+$password = isset($data['password']) ? trim($data['password']) : '';
 
-if ($user_id_to_edit === 0) {
-    echo json_encode(['success' => false, 'error' => 'Неверный ID пользователя.']);
-    exit;
-}
-
-if (empty($new_username)) {
+if ($username === '') {
     echo json_encode(['success' => false, 'error' => 'Имя пользователя не может быть пустым.']);
     exit;
 }
 
-// Нельзя редактировать основного админа (username 'admin') или себя таким образом, чтобы потерять доступ
-// Проверка, не пытаемся ли мы изменить username 'admin' на что-то другое, или другого пользователя на 'admin' (если 'admin' уже существует)
-$checkTargetUserStmt = $mysqli->prepare("SELECT username FROM users WHERE id = ?");
-$checkTargetUserStmt->bind_param("i", $user_id_to_edit);
-$checkTargetUserStmt->execute();
-$targetUserResult = $checkTargetUserStmt->get_result();
-$targetUser = $targetUserResult->fetch_assoc();
-$checkTargetUserStmt->close();
+/* -------- PERMISSION CHECKS -------- */
+$currentUserId = $_SESSION['user_id'] ?? 0;
+$isAdmin       = !empty($_SESSION['is_admin']);
 
-if (!$targetUser) {
-    echo json_encode(['success' => false, 'error' => 'Редактируемый пользователь не найден.']);
-    $mysqli->close();
+if (!$isAdmin && $currentUserId !== $userId) {
+    echo json_encode(['success' => false, 'error' => 'У вас нет прав для изменения этого пользователя.']);
     exit;
 }
 
-// Запрещаем менять имя пользователя 'admin'
-if ($targetUser['username'] === 'admin' && $new_username !== 'admin') {
-    echo json_encode(['success' => false, 'error' => "Имя пользователя 'admin' не может быть изменено."]);
-    $mysqli->close();
+/* -------- VALIDATE UNIQUE USERNAME -------- */
+$stmt = $mysqli->prepare("SELECT id FROM users WHERE username = ? AND id <> ?");
+$stmt->bind_param('si', $username, $userId);
+$stmt->execute();
+$stmt->store_result();
+if ($stmt->num_rows > 0) {
+    echo json_encode(['success' => false, 'error' => 'Пользователь с таким именем уже существует.']);
+    $stmt->close();
     exit;
 }
+$stmt->close();
 
-// Запрещаем назначать имя 'admin' другому пользователю, если 'admin' уже существует и это не тот же пользователь
-if ($new_username === 'admin' && $targetUser['username'] !== 'admin') {
-    $checkAdminExistsStmt = $mysqli->prepare("SELECT id FROM users WHERE username = 'admin'");
-    $checkAdminExistsStmt->execute();
-    if ($checkAdminExistsStmt->get_result()->num_rows > 0) {
-        echo json_encode(['success' => false, 'error' => "Имя пользователя 'admin' уже занято."]);
-        $checkAdminExistsStmt->close();
-        $mysqli->close();
-        exit;
-    }
-    $checkAdminExistsStmt->close();
+/* -------- BUILD UPDATE QUERY -------- */
+$fields = ['username = ?'];
+$params = ['s', &$username];
+
+if ($password !== '') {
+    $hashed  = password_hash($password, PASSWORD_DEFAULT);
+    $fields[] = 'password = ?';
+    $params[0] .= 's';         // add type
+    $params[] = &$hashed;      // add variable by reference
 }
 
+$setClause = implode(', ', $fields);
+$sql       = "UPDATE users SET $setClause WHERE id = ?";
+$params[0] .= 'i';
+$params[]   = &$userId;
 
-// Проверка, не занято ли новое имя пользователя (если оно меняется)
-if ($new_username !== $targetUser['username']) {
-    $checkUsernameStmt = $mysqli->prepare("SELECT id FROM users WHERE username = ? AND id != ?");
-    $checkUsernameStmt->bind_param("si", $new_username, $user_id_to_edit);
-    $checkUsernameStmt->execute();
-    if ($checkUsernameStmt->get_result()->num_rows > 0) {
-        echo json_encode(['success' => false, 'error' => 'Это имя пользователя уже занято.']);
-        $checkUsernameStmt->close();
-        $mysqli->close();
-        exit;
-    }
-    $checkUsernameStmt->close();
-}
-
-
-$sql_parts = [];
-$params = [];
-$types = "";
-
-$sql_parts[] = "username = ?";
-$params[] = $new_username;
-$types .= "s";
-
-if (!empty($new_password)) {
-    if (strlen($new_password) < 1) { // Минимальная длина пароля, можно сделать строже
-        echo json_encode(['success' => false, 'error' => 'Пароль слишком короткий.']);
-        $mysqli->close();
-        exit;
-    }
-    $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-    $sql_parts[] = "password = ?";
-    $params[] = $hashed_password;
-    $types .= "s";
-}
-
-if (empty($sql_parts)) {
-    echo json_encode(['success' => true, 'message' => 'Нет данных для обновления.']); // Или ошибка, если это не ожидается
-    $mysqli->close();
+$stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    echo json_encode(['success' => false, 'error' => 'Ошибка подготовки запроса.']);
     exit;
 }
-
-$params[] = $user_id_to_edit;
-$types .= "i";
-
-$stmt = $mysqli->prepare("UPDATE users SET " . implode(", ", $sql_parts) . " WHERE id = ?");
-$stmt->bind_param($types, ...$params);
+call_user_func_array([$stmt, 'bind_param'], $params);
 
 if ($stmt->execute()) {
-    // Если изменяли текущего админа и поменяли его username, нужно обновить сессию
-    if ($_SESSION['user_id'] == $user_id_to_edit && $new_username !== $_SESSION['username']) {
-        $_SESSION['username'] = $new_username;
+    // Если пользователь редактирует свой аккаунт, обновим сессию
+    if ($userId === $currentUserId) {
+        $_SESSION['username'] = $username;
     }
     echo json_encode(['success' => true]);
 } else {
-    echo json_encode(['success' => false, 'error' => 'Ошибка обновления данных пользователя: ' . $stmt->error]);
+    echo json_encode(['success' => false, 'error' => 'Ошибка БД: ' . $stmt->error]);
 }
-
 $stmt->close();
 $mysqli->close();
 ?>

@@ -117,7 +117,7 @@ if (isset($_POST['edit_product'])) {
 }
 
 // Получение всех пользователей для отображения в таблице
-$usersQuery = "SELECT id, username FROM users"; // Убираем is_admin из запроса, т.к. signin.php не использует его
+$usersQuery = "SELECT id, username, is_admin FROM users";
 $usersResult = $mysqli->query($usersQuery);
 $users = [];
 if ($usersResult && $usersResult->num_rows > 0) {
@@ -271,10 +271,11 @@ $mysqli->close(); // Ensure the connection is closed here
                     <tr>
                         <td><?= htmlspecialchars($user['id']) ?></td>
                         <td><?= htmlspecialchars($user['username']) ?></td>
-                        <td><?= ($user['username'] === 'admin') ? 'Да' : 'Нет' ?></td>
+                        <td><?= $user['is_admin'] ? 'Да' : 'Нет' ?></td>
                         <td>
                             <?php if ($user['username'] !== 'admin'): // Нельзя редактировать или удалять основного админа 'admin' ?>
                                 <button class="button-edit" onclick="openEditUserModal(<?= $user['id'] ?>, '<?= htmlspecialchars($user['username'], ENT_QUOTES) ?>')">Редактировать</button>
+            <button class="button" onclick="toggleAdmin(<?= $user['id'] ?>, <?= $user['is_admin'] ? '0' : '1' ?>)"><?= $user['is_admin'] ? 'Снять права' : 'Сделать админом' ?></button>
                                 <?php if ($_SESSION['user_id'] != $user['id']): // Нельзя удалить себя ?>
                                     <button class="button-delete" onclick="deleteUser(<?= $user['id'] ?>)">Удалить</button>
                                 <?php endif; ?>
@@ -520,8 +521,26 @@ document.getElementById("editUserForm")?.addEventListener("submit", function(eve
     });
 });
 
-// Функция toggleAdmin удаляется, так как админ статус определяется по username === 'admin'
-// function toggleAdmin(userId, isAdmin) { ... }
+function toggleAdmin(userId, newStatus) {
+    fetch('assets/vendor/toggle_admin.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, is_admin: newStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Статус пользователя обновлён.');
+            window.location.reload();
+        } else {
+            alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Ошибка сети при обновлении статуса.');
+    });
+}
 
 function deleteUser(userId) {
     if (confirm('Вы уверены, что хотите удалить этого пользователя? Это действие необратимо.')) {

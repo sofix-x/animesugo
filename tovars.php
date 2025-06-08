@@ -62,7 +62,7 @@ if (isset($_GET['category_id']) || isset($_GET['max_price']) || isset($_GET['sea
             <li><a href="abous_us.php">О нас</a></li>
             <li>
                 <a href="#" onclick="toggleCart()">
-                    <img src="img/card.png" alt="Корзина" class="cart-icon">
+                    <img src="img/card.png" alt="Корзина" class="cart-icon" style="width:28px;height:28px;">
                 </a>
             </li>
             <?php if (isset($_SESSION['username'])): ?>

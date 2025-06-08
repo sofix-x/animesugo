@@ -55,14 +55,14 @@ if (isset($_GET['category_id']) || isset($_GET['max_price']) || isset($_GET['sea
 <body>
 
 <header>
-    <nav>
+    <nav class="container">
         <ul>
             <li><a href="index.php">Главная</a></li>
             <li><a href="tovars.php">Товары</a></li>
             <li><a href="abous_us.php">О нас</a></li>
             <li>
                 <a href="#" onclick="toggleCart()">
-                    <img src="img/card.png" alt="Корзина" class="cart-icon" style="width:28px;height:28px;">
+                    <img src="img/card.png" alt="Корзина" class="cart-icon">
                 </a>
             </li>
             <?php if (isset($_SESSION['username'])): ?>

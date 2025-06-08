@@ -34,7 +34,7 @@
 
     </style>
 <header>
-    <nav>
+    <nav class="container">
         <ul>
             <li><a href="index.php">Главная</a></li>
             <li><a href="tovars.php">Товары</a></li>

@@ -18,16 +18,16 @@
 </header>
 
 <main>
-    <section class="form-section">
+    <section class="auth-card">
         <h2>Регистрация</h2>
         <?php
         session_start(); // Необходимо для доступа к $_SESSION
         if (isset($_SESSION['error_message'])) {
-            echo '<p style="color: red; text-align: center;">' . $_SESSION['error_message'] . '</p>';
+            echo '<p class="message error">' . $_SESSION['error_message'] . '</p>';
             unset($_SESSION['error_message']); // Очищаем сообщение после отображения
         }
         if (isset($_SESSION['success_message'])) {
-            echo '<p style="color: green; text-align: center;">' . $_SESSION['success_message'] . '</p>';
+            echo '<p class="message success">' . $_SESSION['success_message'] . '</p>';
             unset($_SESSION['success_message']); // Очищаем сообщение после отображения
         }
         ?>
@@ -45,7 +45,7 @@
         <input type="password" id="confirm_password" name="confirm_password" required>
     </div>
     <button type="submit" class="submit-button">Зарегистрироваться</button>
-            <p>Уже есть аккаунт? <a href="login.php">Войти</a></p>
+            <a href="login.php" class="footer-link">Уже есть аккаунт? Войти</a>
         </form>
     </section>
 </main>

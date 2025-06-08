@@ -1,113 +1,208 @@
-html, body {
-    height: 100%;
-    margin: 0;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* =========  Variables  ========= */
+:root {
+  --primary: #A020F0;
+  --primary-dark: #8B008B;
+  --text: #222;
+  --radius: 12px;
+  --shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* =========  Reset / Base  ========= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    background: url('../../img/background.png') no-repeat center center fixed; /* Добавляем фон */
-    background-size: cover;
-    color: white;
-    font-family: Arial, sans-serif; /* Шрифт для всего тела */
+  font-family: 'Poppins', Arial, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e2e9f3 100%);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
 }
 
+/* =========  Header / Nav  ========= */
 header {
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10px 0;
-    text-align: center;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
 }
 
 nav ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    gap: 5%;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 
 nav ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 10px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+  transition: color 0.3s;
 }
 
-h2 {
-    color: #A020F0; /* Фиолетовый цвет заголовка */
-    text-align: center; /* Центрирует заголовок формы */
+nav ul li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s;
 }
 
+nav ul li a:hover {
+  color: var(--primary);
+}
+
+nav ul li a:hover::after {
+  width: 100%;
+}
+
+/* =========  Main layout  ========= */
 main {
-    flex: 1;
-    display: flex;
-    justify-content: center; /* Центрирует содержимое по горизонтали */
-    align-items: center; /* Центрирует содержимое по вертикали */
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
 }
 
-.form-section {
-    max-width: 400px;
-    width: 100%; /* Занимает всю ширину в пределах max-width */
-    padding: 20px;
-    border-radius: 10px;
-    background-color: white; /* Белый фон для формы */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* =========  Auth Card  ========= */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+}
+
+/* form elements */
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: 1rem;
 }
 
 label {
-    display: block; /* Убедитесь, что метки отображаются как блочные элементы */
-    margin-bottom: 5px;
-    color: #6a0dad; /* Фиолетовый цвет для меток */
-    font-weight: bold; /* Жирный шрифт */
-    font-size: 16px; /* Размер шрифта */
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+  color: var(--text);
 }
 
-input[type="text"],
-input[type="password"] {
-    width: 80%; /* Измените ширину, если нужно */
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+input[type='text'],
+input[type='password'] {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  transition: border-color 0.3s;
+  font-size: 0.9rem;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus {
-    border-color: #A020F0; /* Цвет границы при фокусе */
-    outline: none; /* Убираем стандартный фокус */
+input[type='text']:focus,
+input[type='password']:focus {
+  border-color: var(--primary);
+  outline: none;
 }
 
-/* Выравнивание кнопки по центру */
+/* buttons */
 .submit-button {
-    background-color: #A020F0; /* Фиолетовый цвет */
-    color: white;
-    border: none;
-    border-radius: 20px; /* Скругленные углы */
-    padding: 10px 15px; /* Добавим немного внутреннего отступа */
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 16px;
-    display: block; /* Превращаем кнопку в блочный элемент */
-    margin: 15px auto; /* Центрируем кнопку с помощью отступов */
+  width: 100%;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 0.5rem;
 }
 
 .submit-button:hover {
-    background-color: #570a9d; /* Темнее фиолетового для эффекта при наведении */
+  background: var(--primary-dark);
 }
 
+/* message paragraphs */
+.message {
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.message.error {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #c62828;
+}
+
+.message.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+/* link under form */
 .footer-link {
-    display: block; /* Отображение ссылки в блочном формате */
-    text-align: center; /* Центрирование текста */
-    margin-top: 15px; /* Отступ сверху */
-    color: #6a0dad; /* Цвет ссылки */
-    text-decoration: none; /* Убираем подчеркивание */
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
 }
 
+.footer-link:hover {
+  color: var(--primary-dark);
+}
+
+/* =========  Footer  ========= */
 footer {
-    background-color: rgba(0, 0, 0, 0.7);
-    text-align: center;
-    padding: 20px;
-    margin-top: 30px;
+  background: #fff;
+  text-align: center;
+  padding: 1.25rem 1rem;
+  font-size: 0.8rem;
+  color: #777;
+  box-shadow: var(--shadow);
+  margin-top: auto;
+}
+
+/* ======== Responsive ======== */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
 }

@@ -18,7 +18,7 @@
 </header>
 
 <main>
-<div class="form-section">
+<section class="auth-card">
     <h2>Вход</h2>
     <?php
     // session_start() уже должен быть вызван в signin.php или register.php перед редиректом сюда
@@ -27,11 +27,11 @@
         session_start();
     }
     if (isset($_SESSION['error_message'])) {
-        echo '<p style="color: red; text-align: center; padding: 10px; border: 1px solid red; background-color: #ffebee; border-radius: 5px;">' . htmlspecialchars($_SESSION['error_message']) . '</p>';
+        echo '<p class="message error">' . htmlspecialchars($_SESSION['error_message']) . '</p>';
         unset($_SESSION['error_message']); // Очищаем сообщение после отображения
     }
     if (isset($_SESSION['success_message'])) { // На случай, если будет сообщение об успехе, например, после выхода
-        echo '<p style="color: green; text-align: center; padding: 10px; border: 1px solid green; background-color: #e8f5e9; border-radius: 5px;">' . htmlspecialchars($_SESSION['success_message']) . '</p>';
+        echo '<p class="message success">' . htmlspecialchars($_SESSION['success_message']) . '</p>';
         unset($_SESSION['success_message']); // Очищаем сообщение после отображения
     }
     ?>
@@ -46,7 +46,7 @@
     </div>
     <button type="submit" class="submit-button">Войти</button>
     </form>
-</div>
+</section>
 
 </main>
 

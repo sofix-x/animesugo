@@ -231,12 +231,12 @@ h2 {
 
 /* =========  Cart Icon  ======== */
 .cart-icon {
-  width: 28px;
-  max-height: 28px;
-  height: auto;
+  width: 28px !important;
+  height: 28px !important;
   display: inline-block;
   cursor: pointer;
   position: relative;
+  object-fit: contain;
 }
 
 .cart-icon img {

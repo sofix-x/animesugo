@@ -41,7 +41,7 @@
             <li><a href="abous_us.php">О нас</a></li>
             <li>
                 <a href="#" onclick="toggleCart()">
-                    <span class="cart-icon">🛒</span>
+                    <span class="cart-icon">Корзина&nbsp;(0)</span>
                 </a>
             </li>
             <?php if (isset($_SESSION['username'])): ?>

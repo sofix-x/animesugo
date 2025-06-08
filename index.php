@@ -27,7 +27,7 @@ $result = $mysqli->query($sql);
             <li><a href="tovars.php">Товары</a></li>
             <li><a href="abous_us.php">О нас</a></li>
             <li class="cart-item">
-                <a href="#" onclick="toggleCart()"><span class="cart-icon">🛒</span></a>
+                <a href="#" onclick="toggleCart()"><span class="cart-icon">Корзина&nbsp;(0)</span></a>
             </li>
             <?php if (isset($_SESSION['username'])): ?>
                 <?php if ($_SESSION['is_admin']): ?>
@@ -138,8 +138,7 @@ $result = $mysqli->query($sql);
     function updateCart(change) {
         cartCount += change; // Обновить общее количество товаров в корзине
         const cartLink = document.querySelector('.cart-icon');
-        // Если у вас есть текст для корзины, вы можете добавить его сюда
-        // cartLink.textContent = `Корзина (${cartCount})`; // Убедитесь, что вы правильно обновляете текст
+        cartLink.textContent = `Корзина (${cartCount})`;
     }
 
     let currentSlide = 0;

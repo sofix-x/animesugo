@@ -15,7 +15,7 @@
             <li><a href="index.php">Главная</a></li>
             <li><a href="login.php">Войти</a></li>
             <li class="cart-item">
-                <a href="#" onclick="toggleCart()"><span class="cart-icon">🛒</span></a>
+                <a href="#" onclick="toggleCart()"><span class="cart-icon">Корзина&nbsp;(0)</span></a>
             </li>
         </ul>
     </nav>

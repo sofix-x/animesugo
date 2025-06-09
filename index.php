@@ -69,9 +69,7 @@ $result = $mysqli->query($sql);
     </section>
 </main>
 
-<footer>
-    <p>&copy; 2024 Интернет-каталог товаров</p>
-</footer>
+<?php include 'footer.php'; ?>
 
 <script src="assets/js/cart.js"></script>
 <script>

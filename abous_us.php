@@ -40,15 +40,23 @@
 
 
 <main>
-    <h1 style="text-align: center;">Оформление заказа</h1>
-    
-    <a href="https://vk.com/sugoitoys" target="_blank">
-        <img src="img/1.jpg" alt="Загляните в нашу группу в ВК" class="promo-image"> 
-    </a>
-    
-    <p class="promo-text">Загляните в нашу группу в ВК, будем рады!</p>
-    <div class="quantity-control">
-    <button class="" onclick="group_vk()">Группа вк</button>
+    <h1 style="text-align: center;">О нас</h1>
+    <div class="about-us-container">
+        <div class="schedule">
+            <h2>График работы по московскому времени:</h2>
+            <p>Понедельник - с 10:00 до 20:00</p>
+            <p>Вторник - с 10:00 до 20:00</p>
+            <p>Среда - с 10:00 до 20:00</p>
+            <p>Четверг - с 10:00 до 20:00</p>
+            <p>Пятница - с 10:00 до 20:00</p>
+            <p>Суббота - выходной</p>
+            <p>Воскресенье - выходной</p>
+            <p>Праздничные дни - выходной</p>
+        </div>
+        <div class="contacts">
+            <h2>Наши контакты:</h2>
+            <p>Группа в ВК: <a href="https://vk.com/sugoitoys" target="_blank">https://vk.com/sugoitoys</a></p>
+        </div>
     </div>
 </main>
 
@@ -60,14 +68,9 @@
 
 
 
-<footer>
-    <p>&copy; 2024 Интернет-каталог товаров</p>
-</footer>
+<?php include 'footer.php'; ?>
 
 <script src="assets/js/cart.js"></script>
 <script>
-    function group_vk() {
-    // Открытие страницы оформления заказа в новой вкладке
-    window.open('https://vk.com/sugoitoys', '_blank'); // Замените 'checkout.php' на нужную ссылку
-}
+    // No script needed for this page anymore
 </script>
